@@ -11,6 +11,9 @@ const batchDetailSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Reference the User model
     },
+    name: {
+      type: String,
+    },
     gender: {
       type: String,
     },
@@ -21,8 +24,9 @@ const batchDetailSchema = new mongoose.Schema(
     fee: {
       type: Number,
     },
-    dueFee: {
+    paidAmount: {
       type: Number,
+      default: 0, // Set the default value to 0
     },
     // You can add more fields as needed for your batch detail entries
   },

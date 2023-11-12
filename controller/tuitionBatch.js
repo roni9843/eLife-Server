@@ -160,9 +160,10 @@ const createBatchDetailsController = async (req, res, next) => {
   // Define the data for the new batch detail document
   const newBatchDetailData = {
     batchId: req.body.batchId, // Replace with the actual batch ID
-    dueFee: req.body.dueFee, // Set the due fee amount
+    paidAmount: req.body.dueFee, // Set the due fee amount
     phone: req.body.phone,
     gender: req.body.gender,
+    name: req.body.name,
   };
 
   // Create a new instance of the BatchDetail model with the data
