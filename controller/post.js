@@ -258,6 +258,33 @@ const getOneUserPostsController = async (req, res, next) => {
   });
 };
 
+const getTheReactionController = async (req, res, next) => {
+  const postId = req.body.id;
+
+  try {
+    PostReaction.find({ postId: postId })
+      .populate("reactId") // Populate the 'reactId' field with User information
+      .then((reactions) => {
+        // 'reactions' will contain an array of post reactions with populated user information
+        console.log(reactions);
+        return res.status(200).json({
+          message: "successful",
+          reactions,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        // Handle the error appropriately
+        return res.status(200).json({
+          message: "successful",
+          reactions: [],
+        });
+      });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createPostController,
   updatePostController,
@@ -266,4 +293,5 @@ module.exports = {
   createPostReactionController,
   deletePostReactionController,
   getOneUserPostsController,
+  getTheReactionController,
 };

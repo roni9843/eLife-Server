@@ -6,6 +6,7 @@ const {
   createPostReactionController,
   deletePostReactionController,
   getOneUserPostsController,
+  getTheReactionController,
 } = require("../controller/post");
 
 const router = require("express").Router();
@@ -24,6 +25,9 @@ router.patch("/updatePost", updatePostController);
 
 // * delete a post
 router.post("/deletePost", deletePostController);
+
+// * create post reaction
+router.post("/getTheReaction", getTheReactionController);
 
 // * create post reaction
 router.post("/createReaction", createPostReactionController);
