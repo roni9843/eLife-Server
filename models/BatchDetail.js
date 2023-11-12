@@ -11,6 +11,9 @@ const batchDetailSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Reference the User model
     },
+    gender: {
+      type: String,
+    },
     phone: {
       type: Number,
       required: true,
