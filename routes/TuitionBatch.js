@@ -12,7 +12,7 @@ const {
 const router = require("express").Router();
 
 // * create a post
-router.get("/getAllBatch", getAllBatchController);
+router.post("/getAllBatch", getAllBatchController);
 
 // * create a post
 router.post("/createBatch", createBatchController);
