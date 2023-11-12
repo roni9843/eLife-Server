@@ -181,6 +181,20 @@ const createBatchDetailsController = async (req, res, next) => {
   }
 };
 
+const getBatchDetailsController = async (req, res, next) => {
+  try {
+    const batchDetails = await BatchDetail.find({ batchId: req.body.batchId });
+
+    return res.status(201).json({
+      state: "successful",
+      batchDetails,
+    });
+  } catch (error) {
+    console.error("Error finding batch details:", error);
+    throw error;
+  }
+};
+
 // ? delete delete Fee Controller
 
 const deleteFeeController = (req, res, next) => {};
@@ -193,4 +207,5 @@ module.exports = {
   createBatchDetailsController,
   deleteFeeController,
   getAllBatchController,
+  getBatchDetailsController,
 };
