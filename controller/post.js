@@ -62,6 +62,20 @@ const createPostReactionController = async (req, res, next) => {
   const postId = req.body.postId;
   const reactId = req.body.reactId;
 
+  // Check if the PostReaction already exists
+  const existingReaction = await PostReaction.findOne({
+    reactionId,
+    postId,
+  });
+
+  if (existingReaction) {
+    // If the reaction already exists, return a response
+    return res.status(400).json({
+      message:
+        "Post reaction already exists for the given reactionId and postId",
+    });
+  }
+
   const postCreate = await PostReaction({
     reactionId,
     postId,
@@ -262,26 +276,20 @@ const getTheReactionController = async (req, res, next) => {
   const postId = req.body.id;
 
   try {
-    PostReaction.find({ postId: postId })
-      .populate("reactId") // Populate the 'reactId' field with User information
-      .then((reactions) => {
-        // 'reactions' will contain an array of post reactions with populated user information
-        console.log(reactions);
-        return res.status(200).json({
-          message: "successful",
-          reactions,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        // Handle the error appropriately
-        return res.status(200).json({
-          message: "successful",
-          reactions: [],
-        });
-      });
+    const reaction = await PostReaction.find({ postId: postId }).populate(
+      "reactId"
+    );
+
+    return res.status(200).json({
+      message: "successful",
+      reaction,
+    });
   } catch (error) {
     console.log(error);
+    return res.status(200).json({
+      message: "successful",
+      reaction: [],
+    });
   }
 };
 
