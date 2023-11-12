@@ -10,19 +10,16 @@ const batchDetailSchema = new mongoose.Schema(
     studentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Reference the User model
+    },
+    phone: {
+      type: Number,
       required: true,
     },
     fee: {
       type: Number,
-      required: true,
     },
     dueFee: {
       type: Number,
-      required: true,
-    },
-    enrollDate: {
-      type: String,
-      required: true,
     },
     // You can add more fields as needed for your batch detail entries
   },
