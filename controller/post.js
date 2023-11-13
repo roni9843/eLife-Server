@@ -64,7 +64,7 @@ const createPostReactionController = async (req, res, next) => {
 
   // Check if the PostReaction already exists
   const existingReaction = await PostReaction.findOne({
-    reactionId,
+    reactId,
     postId,
   });
 
@@ -73,6 +73,7 @@ const createPostReactionController = async (req, res, next) => {
     return res.status(400).json({
       message:
         "Post reaction already exists for the given reactionId and postId",
+      existingReaction,
     });
   }
 
