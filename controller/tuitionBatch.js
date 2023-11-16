@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const BatchDetail = require("../models/BatchDetail");
 const FeeHistory = require("../models/FeeHistory");
 const TuitionBatch = require("../models/TuitionBatch");
@@ -197,6 +198,34 @@ const getBatchDetailsController = async (req, res, next) => {
 };
 
 const getOneTeacherAllBatchController = async (req, res, next) => {
+  try {
+    const result = await TuitionBatch.aggregate([
+      {
+        $match: {
+          teacherId: new mongoose.Types.ObjectId(req.body.teacherId),
+        },
+      },
+      {
+        $lookup: {
+          from: "batchdetails", // Collection name for BatchDetail model
+          localField: "_id", // Field in TuitionBatch
+          foreignField: "batchId", // Field in BatchDetail
+          as: "batchdetails",
+        },
+      },
+    ]);
+
+    //  return result;
+
+    return res.status(201).json({
+      state: "successful",
+      result,
+    });
+  } catch (error) {
+    console.error("Error finding TuitionBatch with details:", error);
+    throw error;
+  }
+
   try {
     const batchDetails = await TuitionBatch.find({
       teacherId: req.body.teacherId,
