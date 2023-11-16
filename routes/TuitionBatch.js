@@ -7,12 +7,16 @@ const {
   deleteFeeController,
   getAllBatchController,
   getBatchDetailsController,
+  getOneTeacherAllBatchController,
 } = require("../controller/tuitionBatch");
 
 const router = require("express").Router();
 
 // * create a post
 router.post("/getAllBatch", getAllBatchController);
+
+// * create a post
+router.post("/getOneTeacherAllBatch", getOneTeacherAllBatchController);
 
 // * create a post
 router.post("/createBatch", createBatchController);

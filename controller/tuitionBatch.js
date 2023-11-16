@@ -17,13 +17,13 @@ const getAllBatchController = async (req, res, next) => {
       {
         $unwind: "$teacherInfo", // If there's always a single teacher per batch
       },
-    ]).exec();
+    ]);
 
     // tuitionBatches will contain an array of documents with teacher information included
     console.log(tuitionBatches);
 
     return res.status(201).json({
-      state: "successful",
+      state: "successful 22",
       tuitionBatches,
     });
   } catch (error) {
@@ -196,6 +196,22 @@ const getBatchDetailsController = async (req, res, next) => {
   }
 };
 
+const getOneTeacherAllBatchController = async (req, res, next) => {
+  try {
+    const batchDetails = await TuitionBatch.find({
+      teacherId: req.body.teacherId,
+    });
+
+    return res.status(201).json({
+      state: "successful",
+      batchDetails,
+    });
+  } catch (error) {
+    console.error("Error finding batch details:", error);
+    throw error;
+  }
+};
+
 // ? delete delete Fee Controller
 
 const deleteFeeController = (req, res, next) => {};
@@ -209,4 +225,5 @@ module.exports = {
   deleteFeeController,
   getAllBatchController,
   getBatchDetailsController,
+  getOneTeacherAllBatchController,
 };
