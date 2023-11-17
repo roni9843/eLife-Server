@@ -32,7 +32,7 @@ const getAllBatchController = async (req, res, next) => {
   }
 };
 
-// ? for new create a batch
+// For create a batch
 const createBatchController = async (req, res, next) => {
   let {
     teacherId,
@@ -43,11 +43,16 @@ const createBatchController = async (req, res, next) => {
     bookedSet,
     courseFee,
     feeType,
+    village,
+    union,
+    thana,
+    district,
+    customDetailsAddress,
   } = req.body;
 
   if (!teacherId || !batchTitle || !feeType) {
     return res.status(400).json({
-      message: "invalid data",
+      message: "Invalid data",
     });
   }
 
@@ -61,6 +66,11 @@ const createBatchController = async (req, res, next) => {
       bookedSet,
       courseFee,
       feeType,
+      village,
+      union,
+      thana,
+      district,
+      customDetailsAddress,
     });
 
     const saveBatch = await batch.save();
@@ -75,7 +85,8 @@ const createBatchController = async (req, res, next) => {
     });
   }
 };
-// ? for update create a batch
+
+// For update a batch
 const updateBatchController = async (req, res, next) => {
   let {
     batchId,
@@ -86,12 +97,30 @@ const updateBatchController = async (req, res, next) => {
     bookedSet,
     courseFee,
     feeType,
+    village,
+    union,
+    thana,
+    district,
+    customDetailsAddress,
   } = req.body;
 
   try {
     const saveBatch = await TuitionBatch.findByIdAndUpdate(
       batchId,
-      { teacherId, bio, batchTime, totalSet, bookedSet, courseFee, feeType },
+      {
+        teacherId,
+        bio,
+        batchTime,
+        totalSet,
+        bookedSet,
+        courseFee,
+        feeType,
+        village,
+        union,
+        thana,
+        district,
+        customDetailsAddress,
+      },
       { new: true }
     );
 

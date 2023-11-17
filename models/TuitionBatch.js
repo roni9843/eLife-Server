@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const tuitionBatchSchema = new mongoose.Schema(
   {
     teacherId: {
-      type: mongoose.Schema.Types.ObjectId, // Assuming teacherId is a reference to another model
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     batchTitle: {
@@ -27,9 +27,14 @@ const tuitionBatchSchema = new mongoose.Schema(
       enum: ["monthly", "onetime"],
       required: true,
     },
+    village: String, // Add village field
+    union: String, // Add union field
+    thana: String, // Add thana field
+    district: String, // Add district field
+    customDetailsAddress: String, // Add customDetailsAddress field
   },
   {
-    timestamps: true, // Enable timestamps
+    timestamps: true,
   }
 );
 
