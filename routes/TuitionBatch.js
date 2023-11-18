@@ -8,6 +8,7 @@ const {
   getAllBatchController,
   getBatchDetailsController,
   getOneTeacherAllBatchController,
+  searchBatchController,
 } = require("../controller/tuitionBatch");
 
 const router = require("express").Router();
@@ -23,6 +24,9 @@ router.post("/createBatch", createBatchController);
 
 // * update a post
 router.post("/updateBatch", updateBatchController);
+
+// * search
+router.post("/searchBatch", searchBatchController);
 
 // * create a post
 router.post("/createBatchDetails", createBatchDetailsController);

@@ -14,6 +14,9 @@ const batchDetailSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    startDate: {
+      type: String,
+    },
     gender: {
       type: String,
     },

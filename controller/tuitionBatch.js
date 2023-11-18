@@ -136,6 +136,33 @@ const updateBatchController = async (req, res, next) => {
   }
 };
 
+const searchBatchController = async (req, res, next) => {
+  const { searchQuery } = req.body;
+
+  try {
+    // Use regex to perform a case-insensitive partial search
+    const batches = await TuitionBatch.find({
+      $or: [
+        { village: { $regex: new RegExp(searchQuery, "i") } },
+        { union: { $regex: new RegExp(searchQuery, "i") } },
+        { thana: { $regex: new RegExp(searchQuery, "i") } },
+        { district: { $regex: new RegExp(searchQuery, "i") } },
+        { customDetailsAddress: { $regex: new RegExp(searchQuery, "i") } },
+      ],
+    });
+
+    return res.status(200).json({
+      state: "successful",
+      batches,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      state: "Error",
+      error,
+    });
+  }
+};
+
 // ? for create  fee a batch
 const createFeeController = async (req, res, next) => {
   try {
@@ -194,6 +221,8 @@ const createBatchDetailsController = async (req, res, next) => {
     phone: req.body.phone,
     gender: req.body.gender,
     name: req.body.name,
+
+    startDate: req.body.startDate,
   };
 
   // Create a new instance of the BatchDetail model with the data
@@ -284,4 +313,5 @@ module.exports = {
   getAllBatchController,
   getBatchDetailsController,
   getOneTeacherAllBatchController,
+  searchBatchController,
 };
