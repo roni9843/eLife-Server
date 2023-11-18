@@ -243,7 +243,9 @@ const createBatchDetailsController = async (req, res, next) => {
 
 const getBatchDetailsController = async (req, res, next) => {
   try {
-    const batchDetails = await BatchDetail.find({ batchId: req.body.batchId });
+    const batchDetails = await BatchDetail.find({
+      batchId: req.body.batchId,
+    }).populate("batchId");
 
     return res.status(201).json({
       state: "successful",
