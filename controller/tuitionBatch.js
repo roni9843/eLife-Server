@@ -114,27 +114,23 @@ const updateBatchController = async (req, res, next) => {
   } = req.body;
 
   try {
-    const saveBatch = await TuitionBatch.findByIdAndUpdate(
-      batchId,
-      {
-        teacherId,
-        bio,
-        batchTime,
-        totalSet,
-        bookedSet,
-        courseFee,
-        feeType,
-        village,
-        union,
-        thana,
-        district,
-        customDetailsAddress,
-        category,
-        batchClass,
-        subject,
-      },
-      { new: true }
-    );
+    const saveBatch = await TuitionBatch.findByIdAndUpdate(batchId, {
+      teacherId,
+      bio,
+      batchTime,
+      totalSet,
+      bookedSet,
+      courseFee,
+      feeType,
+      village,
+      union,
+      thana,
+      district,
+      customDetailsAddress,
+      category,
+      batchClass,
+      subject,
+    });
 
     return res.status(201).json({
       state: "successful",
