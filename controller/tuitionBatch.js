@@ -177,29 +177,35 @@ const searchBatchController = async (req, res, next) => {
 // ? for create  fee a batch
 const createFeeController = async (req, res, next) => {
   try {
-    // Define the data for the new fee history document
-    const newFeeHistoryData = {
-      batchId: req.body.batchId, // Replace with the actual batch ID
-      studentId: req.body.userId, // Replace with the actual student ID
-      amount: req.body.amount, // Set the fee amount
-      // You can set other fields as needed
-    };
+    const { batchId, studentId, paidAmount, amount } = req.body;
 
-    // Create a new instance of the FeeHistory model with the data
-    const newFeeHistory = new FeeHistory(newFeeHistoryData);
+    // Update paidAmount in batchDetailSchema
+    const batchDetail = await BatchDetail.findOneAndUpdate(
+      { batchId, studentId },
+      { $inc: { paidAmount } }, // Increment the existing paidAmount by the provided value
+      { new: true } // Return the updated document
+    );
 
-    // Save the new document to the database
-    const savedFeeHistory = await newFeeHistory.save();
-
-    return res.status(201).json({
-      state: "successful",
-      savedFeeHistory,
+    // Update amount in feeHistorySchema
+    const feeHistory = new FeeHistory({
+      batchId,
+      studentId,
+      amount,
     });
-  } catch (err) {
-    console.error("Error creating fee history:", err);
-    return res.status(500).json({
-      state: "Please insert unique batchTitle",
-      err,
+
+    await feeHistory.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Payment information updated successfully",
+      batchDetail,
+      feeHistory,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };
