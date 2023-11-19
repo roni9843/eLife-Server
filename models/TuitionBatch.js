@@ -8,7 +8,7 @@ const tuitionBatchSchema = new mongoose.Schema(
     },
     batchTitle: {
       type: String,
-      unique: true,
+
       required: true,
     },
     bio: String,
@@ -22,6 +22,9 @@ const tuitionBatchSchema = new mongoose.Schema(
     courseFee: {
       type: Number,
     },
+    category: String,
+    batchClass: String,
+    subject: String,
     feeType: {
       type: String,
       enum: ["monthly", "onetime"],
