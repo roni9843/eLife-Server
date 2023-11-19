@@ -182,7 +182,7 @@ const createFeeController = async (req, res, next) => {
     // Update paidAmount in batchDetailSchema
     const batchDetail = await BatchDetail.findOneAndUpdate(
       { batchId, studentId },
-      { $inc: { paidAmount } }, // Increment the existing paidAmount by the provided value
+      { $inc: { paidAmount: paidAmount } }, // Increment the existing paidAmount by the provided value
       { new: true } // Return the updated document
     );
 
