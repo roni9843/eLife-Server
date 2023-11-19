@@ -179,33 +179,36 @@ const createFeeController = async (req, res, next) => {
   try {
     const { batchId, studentId, paidAmount, amount } = req.body;
 
+    console.log(batchId, studentId, paidAmount, amount);
+
     // Update paidAmount in batchDetailSchema
     const batchDetail = await BatchDetail.findOneAndUpdate(
-      { batchId, studentId },
-      { $inc: { paidAmount: 500 } }, // Increment the existing paidAmount by the provided value
-      { new: true } // Return the updated document
+      { batchId },
+      { $inc: { paidAmount: paidAmount } }, // Increment paidAmount by the provided value
+      { new: true } // Return the modified document
     );
 
-    // Update amount in feeHistorySchema
-    const feeHistory = new FeeHistory({
+    // Add a new entry in feeHistorySchema
+    const feeHistoryEntry = new FeeHistory({
       batchId,
       studentId,
       amount,
     });
 
-    await feeHistory.save();
+    await feeHistoryEntry.save();
 
     res.status(200).json({
       success: true,
-      message: "Payment information updated successfully",
-      batchDetail,
-      feeHistory,
+      message: "Payment updated successfully",
+      updatedBatchDetail: batchDetail,
+      newFeeHistoryEntry: feeHistoryEntry,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
+      error: error.message,
     });
   }
 };
