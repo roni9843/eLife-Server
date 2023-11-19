@@ -48,6 +48,9 @@ const createBatchController = async (req, res, next) => {
     thana,
     district,
     customDetailsAddress,
+    category,
+    batchClass,
+    subject,
   } = req.body;
 
   if (!teacherId || !batchTitle || !feeType) {
@@ -71,6 +74,9 @@ const createBatchController = async (req, res, next) => {
       thana,
       district,
       customDetailsAddress,
+      category,
+      batchClass,
+      subject,
     });
 
     const saveBatch = await batch.save();
@@ -102,6 +108,9 @@ const updateBatchController = async (req, res, next) => {
     thana,
     district,
     customDetailsAddress,
+    category,
+    batchClass,
+    subject,
   } = req.body;
 
   try {
@@ -120,6 +129,9 @@ const updateBatchController = async (req, res, next) => {
         thana,
         district,
         customDetailsAddress,
+        category,
+        batchClass,
+        subject,
       },
       { new: true }
     );
