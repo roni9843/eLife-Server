@@ -112,6 +112,7 @@ const updateBatchController = async (req, res, next) => {
     category,
     batchClass,
     subject,
+    batchTitle,
   } = req.body;
 
   try {
@@ -131,6 +132,7 @@ const updateBatchController = async (req, res, next) => {
       category,
       batchClass,
       subject,
+      batchTitle,
     });
 
     return res.status(201).json({
