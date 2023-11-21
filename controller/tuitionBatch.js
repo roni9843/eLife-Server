@@ -148,29 +148,52 @@ const updateBatchController = async (req, res, next) => {
 };
 
 const searchBatchController = async (req, res, next) => {
-  const { searchQuery } = req.body;
+  // // Use regex to perform a case-insensitive partial search
+  // const batches = await TuitionBatch.find({
+  //   $or: [
+  //     { village: { $regex: new RegExp(searchQuery, "i") } },
+  //     { union: { $regex: new RegExp(searchQuery, "i") } },
+  //     { thana: { $regex: new RegExp(searchQuery, "i") } },
+  //     { district: { $regex: new RegExp(searchQuery, "i") } },
+  //     { customDetailsAddress: { $regex: new RegExp(searchQuery, "i") } },
+  //   ],
+  // });
+
+  const { address, batchClass, category, subject } = req.body;
+
+  let query = {};
+
+  if (address) {
+    query.$or = [
+      { village: new RegExp(address, "i") },
+      { union: new RegExp(address, "i") },
+      { thana: new RegExp(address, "i") },
+      { district: new RegExp(address, "i") },
+      { customDetailsAddress: new RegExp(address, "i") },
+    ];
+  }
+
+  if (batchClass && batchClass !== "All") {
+    query.batchClass = batchClass;
+  }
+
+  if (category && category !== "All") {
+    query.category = category;
+  }
+
+  if (subject && subject !== "All") {
+    query.subject = subject;
+  }
 
   try {
-    // Use regex to perform a case-insensitive partial search
-    const batches = await TuitionBatch.find({
-      $or: [
-        { village: { $regex: new RegExp(searchQuery, "i") } },
-        { union: { $regex: new RegExp(searchQuery, "i") } },
-        { thana: { $regex: new RegExp(searchQuery, "i") } },
-        { district: { $regex: new RegExp(searchQuery, "i") } },
-        { customDetailsAddress: { $regex: new RegExp(searchQuery, "i") } },
-      ],
-    });
-
-    return res.status(200).json({
-      state: "successful",
-      batches,
+    const result = await TuitionBatch.find(query);
+    res.send({
+      message: "success",
+      result,
     });
   } catch (error) {
-    return res.status(500).json({
-      state: "Error",
-      error,
-    });
+    console.error("Error searching tuition batches:", error);
+    throw error;
   }
 };
 
