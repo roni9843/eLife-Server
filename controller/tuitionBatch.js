@@ -147,7 +147,7 @@ const updateBatchController = async (req, res, next) => {
   }
 };
 
-const searchBatchController = async (req, res, next) => {
+const searchBatchController = (req, res, next) => {
   const { teacherId, address, batchClass, category, subject } = req.body;
 
   let query = {};
@@ -178,16 +178,30 @@ const searchBatchController = async (req, res, next) => {
     query.subject = subject;
   }
 
-  try {
-    const result = await TuitionBatch.find(query).populate("teacherId");
-    res.send({
-      message: "success 233",
-      result,
+  TuitionBatch.find(query)
+    .populate("teacherId")
+    .then((result) => {
+      // Fisher-Yates (Knuth) shuffle algorithm
+      const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      };
+
+      // Shuffle the result array
+      const shuffledResult = shuffleArray(result);
+
+      res.send({
+        message: "success 233",
+        result: shuffledResult,
+      });
+    })
+    .catch((error) => {
+      console.error("Error searching tuition batches:", error);
+      throw error;
     });
-  } catch (error) {
-    console.error("Error searching tuition batches:", error);
-    throw error;
-  }
 };
 
 // ? for create  fee a batch
