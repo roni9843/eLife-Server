@@ -148,20 +148,13 @@ const updateBatchController = async (req, res, next) => {
 };
 
 const searchBatchController = async (req, res, next) => {
-  // // Use regex to perform a case-insensitive partial search
-  // const batches = await TuitionBatch.find({
-  //   $or: [
-  //     { village: { $regex: new RegExp(searchQuery, "i") } },
-  //     { union: { $regex: new RegExp(searchQuery, "i") } },
-  //     { thana: { $regex: new RegExp(searchQuery, "i") } },
-  //     { district: { $regex: new RegExp(searchQuery, "i") } },
-  //     { customDetailsAddress: { $regex: new RegExp(searchQuery, "i") } },
-  //   ],
-  // });
-
-  const { address, batchClass, category, subject } = req.body;
+  const { teacherId, address, batchClass, category, subject } = req.body;
 
   let query = {};
+
+  if (teacherId) {
+    query.teacherId = teacherId;
+  }
 
   if (address) {
     query.$or = [
@@ -186,9 +179,9 @@ const searchBatchController = async (req, res, next) => {
   }
 
   try {
-    const result = await TuitionBatch.find(query);
+    const result = await TuitionBatch.find(query).populate("teacherId");
     res.send({
-      message: "success",
+      message: "success 233",
       result,
     });
   } catch (error) {

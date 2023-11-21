@@ -5,6 +5,7 @@ const tuitionBatchSchema = new mongoose.Schema(
     teacherId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "User",
     },
     batchTitle: {
       type: String,
