@@ -146,7 +146,6 @@ const updateBatchController = async (req, res, next) => {
     });
   }
 };
-
 const searchBatchController = (req, res, next) => {
   const { teacherId, address, batchClass, category, subject } = req.body;
 
@@ -178,10 +177,49 @@ const searchBatchController = (req, res, next) => {
     query.subject = subject;
   }
 
-  TuitionBatch.find(query)
-    .populate("teacherId")
+  TuitionBatch.aggregate([
+    { $match: query },
+
+    {
+      $lookup: {
+        from: "batchdetails",
+        let: { batchId: "$_id" },
+        pipeline: [{ $match: { $expr: { $eq: ["$batchId", "$$batchId"] } } }],
+        as: "batchAllDetails",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        let: { teacherId: "$teacherId" },
+        pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$teacherId"] } } }],
+        as: "teacherDetails",
+      },
+    },
+    {
+      $project: {
+        batchTitle: 1,
+        bio: 1,
+        batchTime: 1,
+        totalSet: 1,
+        bookedSet: 1,
+        courseFee: 1,
+        category: 1,
+        batchClass: 1,
+        subject: 1,
+        feeType: 1,
+        village: 1,
+        union: 1,
+        thana: 1,
+        district: 1,
+        customDetailsAddress: 1,
+        batchAllDetailsCount: { $size: "$batchAllDetails" },
+        teacherDetails: { $arrayElemAt: ["$teacherDetails", 0] },
+      },
+    },
+  ])
     .then((result) => {
-      // Fisher-Yates (Knuth) shuffle algorithm
+      console.log("Result:", result); // Add this line for logging
       const shuffleArray = (array) => {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -189,18 +227,16 @@ const searchBatchController = (req, res, next) => {
         }
         return array;
       };
-
-      // Shuffle the result array
       const shuffledResult = shuffleArray(result);
-
       res.send({
         message: "success 233",
         result: shuffledResult,
+        date: new Date(),
       });
     })
     .catch((error) => {
       console.error("Error searching tuition batches:", error);
-      throw error;
+      res.status(500).json({ error: "Internal Server Error" });
     });
 };
 
