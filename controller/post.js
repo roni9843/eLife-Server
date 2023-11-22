@@ -33,21 +33,13 @@ const getAllPostController = async (req, res, next) => {
 
 // ? for get all post
 const getAllPostWithPaginationController = async (req, res, next) => {
-  let aggregationPipeline = [];
+  console.log(req.body.page, req.body.pageSize);
 
-  if (req.body.scrollId) {
-    // If scrollId is provided, use it to skip documents
-    aggregationPipeline.push({
-      $match: {
-        _id: { $lt: req.body.scrollId },
-      },
-    });
-  }
-
-  aggregationPipeline = aggregationPipeline.concat([
+  const allPosts = await Post.aggregate([
     {
+      // ? find reaction
       $lookup: {
-        from: "postreactions",
+        from: "postreactions", // The name of the "Reaction" collection
         localField: "_id",
         foreignField: "postId",
         as: "reactions",
@@ -60,16 +52,19 @@ const getAllPostWithPaginationController = async (req, res, next) => {
       },
     },
     {
+      // ? find postUser
       $lookup: {
-        from: "users",
+        from: "users", // The name of the "User" collection
         localField: "postBy",
         foreignField: "_id",
         as: "postUser",
       },
     },
+
     {
+      // ? find user react
       $lookup: {
-        from: "users",
+        from: "users", // The name of the "User" collection
         localField: "reactions.reactId",
         foreignField: "_id",
         as: "reactions.user",
@@ -88,15 +83,16 @@ const getAllPostWithPaginationController = async (req, res, next) => {
     },
     {
       $sort: {
-        createdAt: -1,
+        createdAt: -1, // Sort by createdAt field in descending order (most recent first)
       },
     },
     {
-      $limit: req.body.pageSize,
+      $skip: req.body.page,
+    },
+    {
+      $limit: 10,
     },
   ]);
-
-  const allPosts = await Post.aggregate(aggregationPipeline);
 
   return res.status(200).json({
     message: "successful",
