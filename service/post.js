@@ -61,6 +61,9 @@ const makePost = async (postBy, status) => {
         createdAt: -1, // Sort by createdAt field in descending order (most recent first)
       },
     },
+    {
+      $limit: 1, // Limit to only one document (the latest post)
+    },
   ]);
 
   return allPosts;
