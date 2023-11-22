@@ -228,10 +228,18 @@ const searchBatchController = (req, res, next) => {
         return array;
       };
       const shuffledResult = shuffleArray(result);
+
+      const currentDate = new Date();
+
+      // Filter out entries where the batchTime date has already passed
+      const filteredData = shuffledResult.filter((entry) => {
+        const batchTime = new Date(entry.batchTime);
+        return batchTime > currentDate;
+      });
+
       res.send({
         message: "success 233",
-        result: shuffledResult,
-        date: new Date(),
+        result: filteredData,
       });
     })
     .catch((error) => {

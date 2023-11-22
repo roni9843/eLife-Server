@@ -31,6 +31,79 @@ const getAllPostController = async (req, res, next) => {
   });
 };
 
+// ? for get all post
+const getAllPostWithPaginationController = async (req, res, next) => {
+  let aggregationPipeline = [];
+
+  if (req.body.scrollId) {
+    // If scrollId is provided, use it to skip documents
+    aggregationPipeline.push({
+      $match: {
+        _id: { $lt: req.body.scrollId },
+      },
+    });
+  }
+
+  aggregationPipeline = aggregationPipeline.concat([
+    {
+      $lookup: {
+        from: "postreactions",
+        localField: "_id",
+        foreignField: "postId",
+        as: "reactions",
+      },
+    },
+    {
+      $unwind: {
+        path: "$reactions",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "postBy",
+        foreignField: "_id",
+        as: "postUser",
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "reactions.reactId",
+        foreignField: "_id",
+        as: "reactions.user",
+      },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        status: { $first: "$status" },
+        userInfo: { $push: "$postUser" },
+        createdAt: {
+          $first: "$createdAt",
+        },
+        reactions: { $push: "$reactions" },
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+    {
+      $limit: req.body.pageSize,
+    },
+  ]);
+
+  const allPosts = await Post.aggregate(aggregationPipeline);
+
+  return res.status(200).json({
+    message: "successful",
+    allPosts,
+  });
+};
+
 // ? for update a post
 const updatePostController = async (req, res, next) => {
   const postId = req.body.id;
@@ -303,4 +376,5 @@ module.exports = {
   deletePostReactionController,
   getOneUserPostsController,
   getTheReactionController,
+  getAllPostWithPaginationController,
 };

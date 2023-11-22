@@ -7,6 +7,7 @@ const {
   deletePostReactionController,
   getOneUserPostsController,
   getTheReactionController,
+  getAllPostWithPaginationController,
 } = require("../controller/post");
 
 const router = require("express").Router();
@@ -16,6 +17,9 @@ router.post("/createPost", createPostController);
 
 // * get a post
 router.get("/getAllPost", getAllPostController);
+
+// * get a post
+router.post("/getAllPostWithPagination", getAllPostWithPaginationController);
 
 // * get a post
 router.post("/getOneUserPosts", getOneUserPostsController);
