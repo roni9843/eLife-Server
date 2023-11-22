@@ -3,18 +3,23 @@ const Post = require("../models/Post");
 const User = require("../models/User");
 
 const makePost = async (postBy, status) => {
+  // Create and save the new post
   const postCreate = new Post({
     postBy,
     status,
   });
+  await postCreate.save();
 
-  postCreate.save();
-
+  // Retrieve all posts with aggregations
   const allPosts = await Post.aggregate([
     {
-      // ? find reaction
+      $match: {
+        _id: postCreate._id, // Match the newly created post
+      },
+    },
+    {
       $lookup: {
-        from: "postreactions", // The name of the "Reaction" collection
+        from: "postreactions",
         localField: "_id",
         foreignField: "postId",
         as: "reactions",
@@ -27,19 +32,16 @@ const makePost = async (postBy, status) => {
       },
     },
     {
-      // ? find postUser
       $lookup: {
-        from: "users", // The name of the "User" collection
+        from: "users",
         localField: "postBy",
         foreignField: "_id",
         as: "postUser",
       },
     },
-
     {
-      // ? find user react
       $lookup: {
-        from: "users", // The name of the "User" collection
+        from: "users",
         localField: "reactions.reactId",
         foreignField: "_id",
         as: "reactions.user",
@@ -50,19 +52,14 @@ const makePost = async (postBy, status) => {
         _id: "$_id",
         status: { $first: "$status" },
         userInfo: { $push: "$postUser" },
-        createdAt: {
-          $first: "$createdAt",
-        },
+        createdAt: { $first: "$createdAt" },
         reactions: { $push: "$reactions" },
       },
     },
     {
       $sort: {
-        createdAt: -1, // Sort by createdAt field in descending order (most recent first)
+        createdAt: -1,
       },
-    },
-    {
-      $limit: 1, // Limit to only one document (the latest post)
     },
   ]);
 
