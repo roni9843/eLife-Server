@@ -174,7 +174,9 @@ const searchBatchController = (req, res, next) => {
   }
 
   if (subject && subject !== "All") {
-    query.subject = subject;
+    // query.subject = subject;
+
+    query.$or = [{ subject: new RegExp(subject, "i") }];
   }
 
   TuitionBatch.aggregate([
