@@ -190,7 +190,7 @@ const updatePost = async (postId, status) => {
 const deletePost = async (postId) => {
   const uPost = await Post.deleteOne({ _id: postId });
 
- // const allPosts = await Post.aggregate([
+  const allPosts = await Post.aggregate([
     {
       $lookup: {
         from: "postreactions",
@@ -237,7 +237,7 @@ const deletePost = async (postId) => {
         createdAt: -1,
       },
     },
- // ]);
+  ]);
 
   return uPost;
 };
