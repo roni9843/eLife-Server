@@ -128,9 +128,16 @@ const getAllPost = async () => {
 };
 
 const updatePost = async (postId, status) => {
-  const uPost = await Post.updateOne({ _id: postId }, { status: status });
+  // Update the post
+  const uPost = await Post.findByIdAndUpdate(postId, { status }, { new: true });
 
-  const allPosts = await Post.aggregate([
+  // Aggregate to get the updated post with join data
+  const updatedPost = await Post.aggregate([
+    {
+      $match: {
+        _id: uPost._id, // Match the updated post
+      },
+    },
     {
       $lookup: {
         from: "postreactions",
@@ -166,9 +173,7 @@ const updatePost = async (postId, status) => {
         _id: "$_id",
         status: { $first: "$status" },
         userInfo: { $push: "$postUser" },
-        createdAt: {
-          $first: "$createdAt",
-        },
+        createdAt: { $first: "$createdAt" },
         reactions: { $push: "$reactions" },
       },
     },
@@ -179,13 +184,13 @@ const updatePost = async (postId, status) => {
     },
   ]);
 
-  return allPosts;
+  return updatedPost;
 };
 
 const deletePost = async (postId) => {
   const uPost = await Post.deleteOne({ _id: postId });
 
-  const allPosts = await Post.aggregate([
+ // const allPosts = await Post.aggregate([
     {
       $lookup: {
         from: "postreactions",
@@ -232,9 +237,9 @@ const deletePost = async (postId) => {
         createdAt: -1,
       },
     },
-  ]);
+ // ]);
 
-  return allPosts;
+  return uPost;
 };
 
 module.exports = {
