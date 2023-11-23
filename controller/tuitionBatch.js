@@ -395,7 +395,47 @@ const getOneTeacherAllBatchController = async (req, res, next) => {
   }
 };
 
-// ? delete delete Fee Controller
+const deleteBatchController = async (req, res, next) => {
+  try {
+    const batchId = req.body.batchId; // Assuming batchId is passed as a parameter
+
+    // Find and remove associated BatchDetail documents
+    await BatchDetail.deleteMany({ batchId });
+
+    // Find and remove associated FeeHistory documents
+    await FeeHistory.deleteMany({ batchId });
+
+    // Remove the TuitionBatch document
+    await TuitionBatch.deleteOne({ _id: batchId });
+
+    res.json({
+      message: "TuitionBatch and associated documents deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error in deleteBatchController:", error);
+    next(error);
+  }
+};
+
+const deleteBatchDetailController = async (req, res, next) => {
+  try {
+    const batchDetailId = req.body.batchDetailId; // Assuming batchDetailId is passed as a parameter
+
+    // Find and remove associated FeeHistory documents
+    await FeeHistory.deleteMany({ batchDetailId });
+
+    // Remove the BatchDetail document
+    await BatchDetail.deleteOne({ _id: batchDetailId });
+
+    res.json({
+      message:
+        "BatchDetail and associated FeeHistory documents deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error in deleteBatchDetailController:", error);
+    next(error);
+  }
+};
 
 const deleteFeeController = (req, res, next) => {};
 
@@ -410,4 +450,6 @@ module.exports = {
   getBatchDetailsController,
   getOneTeacherAllBatchController,
   searchBatchController,
+  deleteBatchController,
+  deleteBatchDetailController,
 };
