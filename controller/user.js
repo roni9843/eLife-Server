@@ -131,10 +131,19 @@ const ChangePassController = async (req, res, next) => {
 // ? for update only the one user
 const GetAllBloodController = async (req, res, next) => {
   try {
+    // Calculate the date 3 months ago
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
     const users = await User.find({
       wantToDonate: true,
       bloodGroup: { $ne: null },
+      $or: [
+        { lastDonateDate: { $lt: threeMonthsAgo.toISOString() } }, // Users who last donated more than 3 months ago
+        { lastDonateDate: null }, // Users with lastDonateDate as null
+      ],
     }).exec();
+
     console.log(users);
 
     return res.status(200).json({
@@ -143,6 +152,10 @@ const GetAllBloodController = async (req, res, next) => {
     });
   } catch (err) {
     console.error(err);
+    // Handle the error and send an appropriate response
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
 };
 
