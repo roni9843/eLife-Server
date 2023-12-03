@@ -159,6 +159,48 @@ const GetAllBloodController = async (req, res, next) => {
   }
 };
 
+// ? for update only the one user
+const searchByBloodController = async (req, res, next) => {
+  try {
+    const { searchText } = req.body;
+
+    // Calculate the date 3 months ago
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+    // Create a regex pattern to match the text in any part of the address properties
+    const regexPattern = new RegExp(searchText || "", "i");
+
+    const users = await User.find({
+      wantToDonate: true,
+      bloodGroup: { $ne: null },
+      $or: [
+        { lastDonateDate: { $lt: threeMonthsAgo.toISOString() } }, // Users who last donated more than 3 months ago
+        { lastDonateDate: null }, // Users with lastDonateDate as null
+      ],
+      $or: [
+        { village: { $regex: regexPattern } },
+        { union: { $regex: regexPattern } },
+        { thana: { $regex: regexPattern } },
+        { district: { $regex: regexPattern } },
+      ],
+    }).exec();
+
+    console.log(users);
+
+    return res.status(200).json({
+      message: "successful",
+      user: users,
+    });
+  } catch (err) {
+    console.error(err);
+    // Handle the error and send an appropriate response
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   updateOneUserController,
   findAllUserController,
@@ -167,4 +209,5 @@ module.exports = {
   findAllTeacherWithUserController,
   ChangePassController,
   GetAllBloodController,
+  searchByBloodController,
 };

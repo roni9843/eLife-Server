@@ -6,6 +6,7 @@ const {
   findAllTeacherWithUserController,
   ChangePassController,
   GetAllBloodController,
+  searchByBloodController,
 } = require("../controller/user");
 const auth = require("../middleware/auth");
 
@@ -31,5 +32,8 @@ router.post("/ChangePass", ChangePassController);
 
 // * get blood
 router.get("/GetAllBlood", GetAllBloodController);
+
+// * get blood
+router.post("/searchByBlood", searchByBloodController);
 
 module.exports = router;
