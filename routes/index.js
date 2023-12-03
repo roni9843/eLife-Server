@@ -4,6 +4,7 @@ const authRoute = require("./auth");
 const userRoute = require("./user");
 const postRoute = require("./post");
 const tuitionBatchRoute = require("./TuitionBatch");
+const adminRoute = require("./admin");
 const auth = require("../middleware/auth");
 // const userRoute = require("./user");
 // const AdminAttendanceRoute = require("./admin-attendance");
@@ -21,6 +22,9 @@ router.use("/api/v1/post", postRoute);
 
 // ? for Tuition Batch
 router.use("/api/v1/TuitionBatch", tuitionBatchRoute);
+
+// ? for Tuition Batch
+router.use("/api/v1/admin", adminRoute);
 
 // router.use("/api/v1/users", auth, userRoute);
 
