@@ -115,7 +115,7 @@ const otpController = async (req, res, next) => {
     const apiUrl = `https://app.smsnoc.com/api/v3/sms/send?recipient=${recipientNumber}&sender_id=${senderId}`;
 
     const messageBody = {
-      message: `Hello user,\n\nYour verification code for eLife is: ${randomNumber}\n\nPlease enter this code in the provided field to complete your phone number verification.\n\nNote: Do not share this code with anyone.\n\nThank you,\neLife`,
+      message: `Hello ${name},\n\nYour verification code for eLife is: ${randomNumber}\n\nPlease enter this code in the provided field to complete your phone number verification.\n\nNote: Do not share this code with anyone.\n\nThank you,\neLife`,
     };
 
     const response = await fetch(apiUrl, {
