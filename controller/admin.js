@@ -5,6 +5,8 @@ const TuitionBatch = require("../models/TuitionBatch");
 const User = require("../models/User");
 
 const fetch = require("node-fetch");
+const PostReaction = require("../models/PostReaction");
+const Post = require("../models/Post");
 
 const getAllUserAdminController = async (req, res, next) => {
   try {
@@ -84,7 +86,69 @@ const createUserVerifyAdminController = async (req, res, next) => {
   }
 };
 
+const deleteTheUserAdminController = async (req, res, next) => {
+  const userId = req.body.id;
+
+  console.log(userId);
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    // If the user is not found, return an error response
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    try {
+      // Remove user-related documents
+      const batchDetailDeleteResult = await BatchDetail.deleteMany({
+        studentId: userId,
+      });
+      const feeHistoryDeleteResult = await FeeHistory.deleteMany({
+        studentId: userId,
+      });
+      const postReactionDeleteResult = await PostReaction.deleteMany({
+        reactId: userId,
+      });
+      const tuitionBatchDeleteResult = await TuitionBatch.deleteMany({
+        teacherId: userId,
+      });
+
+      // Delete posts associated with the user
+      const postDeleteResult = await Post.deleteMany({
+        postBy: userId,
+      });
+
+      console.log("BatchDetail Delete Result:", batchDetailDeleteResult);
+      console.log("FeeHistory Delete Result:", feeHistoryDeleteResult);
+      console.log("PostReaction Delete Result:", postReactionDeleteResult);
+      console.log("TuitionBatch Delete Result:", tuitionBatchDeleteResult);
+      console.log("Post Delete Result:", postDeleteResult);
+
+      // Remove the user
+      await user.deleteOne(); // Use deleteOne or deleteMany as needed
+
+      // Return success response
+      return res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+      // Log the error for debugging
+      console.error("Error in deleteTheUserAdminController:", error);
+
+      // Return error response
+      return res.status(500).json({ message: "Internal server error 1" });
+    }
+  } catch (error) {
+    // Log the error for debugging
+    console.error("Error finding user:", error);
+
+    // If an error occurs, return an error response
+    return res.status(500).json({ message: "Internal server error 2" });
+  }
+};
+
 module.exports = {
   createUserVerifyAdminController,
   getAllUserAdminController,
+  deleteTheUserAdminController,
 };
