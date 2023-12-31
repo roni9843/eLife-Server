@@ -2,11 +2,13 @@ const { default: mongoose } = require("mongoose");
 const Post = require("../models/Post");
 const User = require("../models/User");
 
-const makePost = async (postBy, status) => {
+const makePost = async (postBy, status, category, title) => {
   // Create and save the new post
   const postCreate = new Post({
     postBy,
     status,
+    category,
+    title,
   });
   await postCreate.save();
 
@@ -127,9 +129,13 @@ const getAllPost = async () => {
   return allPosts;
 };
 
-const updatePost = async (postId, status) => {
+const updatePost = async (postId, status, category, title) => {
   // Update the post
-  const uPost = await Post.findByIdAndUpdate(postId, { status }, { new: true });
+  const uPost = await Post.findByIdAndUpdate(
+    postId,
+    { status, category, title },
+    { new: true }
+  );
 
   // Aggregate to get the updated post with join data
   const updatedPost = await Post.aggregate([

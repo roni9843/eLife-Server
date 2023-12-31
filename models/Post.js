@@ -4,6 +4,14 @@ const mongoose = require("mongoose");
 
 const postSchema = new mongoose.Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
+    category: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
       required: true,

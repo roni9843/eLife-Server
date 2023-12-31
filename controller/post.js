@@ -12,8 +12,10 @@ const {
 const createPostController = async (req, res, next) => {
   const postBy = req.body.postBy;
   const status = req.body.status;
+  const category = req.body.category;
+  const title = req.body.title;
 
-  const post = await makePost(postBy, status);
+  const post = await makePost(postBy, status, category, title);
 
   return res.status(200).json({
     message: "successful",
@@ -105,7 +107,10 @@ const updatePostController = async (req, res, next) => {
   const postId = req.body.id;
   const status = req.body.status;
 
-  const post = await updatePost(postId, status);
+  const category = req.body.category;
+  const title = req.body.title;
+
+  const post = await updatePost(postId, status, category, title);
 
   return res.status(200).json({
     message: "successful",
