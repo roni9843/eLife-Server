@@ -6,11 +6,11 @@ const postSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      //    required: true,
     },
     category: {
       type: Number,
-      required: true,
+      // required: true,
     },
     status: {
       type: String,
